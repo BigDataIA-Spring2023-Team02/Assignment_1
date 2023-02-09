@@ -1,0 +1,1 @@
+CREATE TABLE IF NOT EXISTS NexradMap (NCDCID number, ICAO text, WBAN number, NAME text, COUNTRY text, ST text, COUNTY text, LAT float, LON float, ELEV number, UTC number, STNTYPE text);
