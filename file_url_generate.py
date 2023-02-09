@@ -1,7 +1,8 @@
 import re
 import requests
-from dotenv import load_dotenv
+import streamlit as st
 
+@st.cache
 def goes_18_link_generation(file):
     try:
         start_url = "https://noaa-goes18.s3.amazonaws.com/"
@@ -21,33 +22,36 @@ def goes_18_link_generation(file):
             year = file_name[3][1:5]
             day = file_name[3][5:8]
             hour = file_name[3][8:10]
+            selected_file_key = file_name[1][0:7] + str_2 + '/' + year + '/' + day + '/' + hour + '/' + file
             url = start_url + file_name[1][0:7] + str_2 + '/' + year + '/' + day + '/' + hour + '/' + file
             
             response = requests.get(url)
             if(response.status_code == 404):
                 print("Sorry! No such file exists.")
                 raise SystemExit()
-            return url
+            return url, selected_file_key
         
         else:
             print("Invalid Filename format, please follow format for GOES18!")
             raise SystemExit()
-
+    
     except:
         print("No input Filename.")
 
+@st.cache
 def nexrad_link_generation(file):
     try:
         start_url = "https://noaa-nexrad-level2.s3.amazonaws.com/"
         file = file.strip()
 
         if (re.match(r'[A-Z]{3}[A-Z0-9][0-9]{8}[_][0-9]{6}[_]{0,1}[A-Z]{0,1}[0-9]{0,2}[_]{0,1}[A-Z]{0,3}\b', file)):
+            selected_file_key = file[4:8] + "/" + file[8:10] + "/" + file[10:12] + "/" + file[:4] + "/" + file
             url = start_url + file[4:8] + "/" + file[8:10] + "/" + file[10:12] + "/" + file[:4] + "/" + file
             response = requests.get(url)
             if(response.status_code == 404):
                 print("Sorry! No such file exists.")
                 raise SystemExit()
-            return url
+            return url, selected_file_key
         
         else:
             print("Invalid Filename format, please follow format for GOES18!")
@@ -56,6 +60,7 @@ def nexrad_link_generation(file):
     except:
         print("No input Filename.")
 
+@st.cache
 def goes18_filename_link_generation(product_name, year_input, day_input, hour_input, file_input):
     try:
         start_url = "https://noaa-goes18.s3.amazonaws.com/"
@@ -64,33 +69,36 @@ def goes18_filename_link_generation(product_name, year_input, day_input, hour_in
         day = day_input
         hour = hour_input
         file = file_input
+        selected_file = product + '/' + year + '/' + day + '/' + hour + '/' + file
         url = start_url + product + '/' + year + '/' + day + '/' + hour + '/' + file
         
-        # response = requests.get(url)
-        # if(response.status_code == 404):
-        #     print("Sorry! No such file exists.")
-        #     raise SystemExit()
-        return url
+        response = requests.get(url)
+        if(response.status_code == 404):
+            print("Sorry! No such file exists.")
+            raise SystemExit()
+        return url, selected_file
         
     except:
         print("No input Filename.")
 
-def nexrad_filename_link_generation(product_name, year_input, day_input, hour_input, file_input):
+@st.cache
+def nexrad_filename_link_generation(year_input, month_input, day_input, station_code_input, file_input):
     try:
         start_url = "https://noaa-nexrad-level2.s3.amazonaws.com/"
-        product = product_name
+        # year, month, day, station
         year = year_input
+        month = month_input
         day = day_input
-        hour = hour_input
+        station_code = station_code_input
         file = file_input
-        url = start_url + product + '/' + year + '/' + day + '/' + hour + '/' + file
+        selected_file = year + '/' + month + '/' + day + '/' + station_code + '/' + file
+        url = start_url + year + '/' + month + '/' + day + '/' + station_code + '/' + file
         
-        # response = requests.get(url)
-        # if(response.status_code == 404):
-        #     print("Sorry! No such file exists.")
-        #     raise SystemExit()
-        return url
+        response = requests.get(url)
+        if(response.status_code == 404):
+            print("Sorry! No such file exists.")
+            raise SystemExit()
+        return url, selected_file
         
     except:
         print("No input Filename.")
-
