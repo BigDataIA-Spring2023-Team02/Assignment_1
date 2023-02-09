@@ -2,7 +2,6 @@ import re
 import requests
 import streamlit as st
 
-@st.cache
 def goes_18_link_generation(file):
     try:
         start_url = "https://noaa-goes18.s3.amazonaws.com/"
@@ -38,7 +37,6 @@ def goes_18_link_generation(file):
     except:
         print("No input Filename.")
 
-@st.cache
 def nexrad_link_generation(file):
     try:
         start_url = "https://noaa-nexrad-level2.s3.amazonaws.com/"
@@ -60,7 +58,6 @@ def nexrad_link_generation(file):
     except:
         print("No input Filename.")
 
-@st.cache
 def goes18_filename_link_generation(product_name, year_input, day_input, hour_input, file_input):
     try:
         start_url = "https://noaa-goes18.s3.amazonaws.com/"
@@ -81,11 +78,9 @@ def goes18_filename_link_generation(product_name, year_input, day_input, hour_in
     except:
         print("No input Filename.")
 
-@st.cache
 def nexrad_filename_link_generation(year_input, month_input, day_input, station_code_input, file_input):
     try:
         start_url = "https://noaa-nexrad-level2.s3.amazonaws.com/"
-        # year, month, day, station
         year = year_input
         month = month_input
         day = day_input

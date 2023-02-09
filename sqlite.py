@@ -4,11 +4,10 @@ import sqlite3
 import pandas as pd
 from pathlib import Path
 from noaa_scrape_data import *
+import streamlit as st
 
 class GoesSqlite:
     def __init__(self):
-
-        noaa_scrape = Scrape_Data()
 
         database_file_name = 'scrape_data.db'
         self.database_file_path = os.path.join(os.path.dirname(__file__), database_file_name)
@@ -16,9 +15,10 @@ class GoesSqlite:
         ddl_file_name = 'geos18.sql'
         self.ddl_file_path = os.path.join(os.path.dirname(__file__), ddl_file_name)
 
-        self.df = noaa_scrape.geos18_data()
+        self.df = pd.read_csv('geos18_data.csv', dtype = str)
         self.table_name = 'GEOS18'
-
+    
+    @st.cache
     def create_database(self):
         with open(self.ddl_file_path, 'r') as sql_file:
             sql_script = sql_file.read()        
@@ -29,6 +29,7 @@ class GoesSqlite:
         db.commit()
         db.close()
 
+    @st.cache
     def check_database_initilization(self):
         print(os.path.dirname(__file__))
         if Path(self.database_file_path).is_file():
@@ -37,12 +38,14 @@ class GoesSqlite:
         else:
             logging.info("Database file already exist") 
 
+    @st.cache
     def fetch_from_sql_into_df(self):
         db = sqlite3.connect(self.database_file_path)
         df1 = pd.read_sql_query("SELECT * FROM GEOS18", db)
         logging.info(df1)
         return df1
 
+    @st.cache
     def main(self):
         self.check_database_initilization()
         data = self.fetch_from_sql_into_df()
@@ -52,17 +55,16 @@ class GoesSqlite:
 class NexradSqlite:
     def __init__(self):
 
-        noaa_scrape = Scrape_Data()
-
         database_file_name = 'scrape_data.db'
         self.database_file_path = os.path.join(os.path.dirname(__file__), database_file_name)
 
         ddl_file_name = 'nexrad.sql'
         self.ddl_file_path = os.path.join(os.path.dirname(__file__), ddl_file_name)
 
-        self.df = noaa_scrape.nexrad_data()
+        self.df = pd.read_csv('nexrad_data.csv', dtype = str)
         self.table_name = 'NEXRAD'
 
+    @st.cache
     def create_database(self):
         with open(self.ddl_file_path, 'r') as sql_file:
             sql_script = sql_file.read()        
@@ -73,6 +75,7 @@ class NexradSqlite:
         db.commit()
         db.close()
 
+    @st.cache
     def check_database_initilization(self):
         print(os.path.dirname(__file__))
         if Path(self.database_file_path).is_file():
@@ -81,12 +84,14 @@ class NexradSqlite:
         else:
             logging.info("Database file already exist") 
 
+    @st.cache
     def fetch_from_sql_into_df(self):
         db = sqlite3.connect(self.database_file_path)
         df1 = pd.read_sql_query("SELECT * FROM NEXRAD", db)
         logging.info(df1)
         return df1
 
+    @st.cache
     def main(self):
         self.check_database_initilization()
         data = self.fetch_from_sql_into_df()

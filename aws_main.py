@@ -4,7 +4,6 @@ import logging
 from dotenv import load_dotenv
 import streamlit as st
 
-@st.cache
 class AWS_Main:
     def __init__(self):
         load_dotenv ()
@@ -30,7 +29,7 @@ class AWS_Main:
         
         self.geos_bucket_name = "noaa-goes18"
         self.nexrad_bucket_name = "noaa-nexrad-level2"
-
+    
     def list_files_in_user_bucket(self):
         my_bucket = self.s3client.list_objects_v2(Bucket = os.environ.get('USER_BUCKET_NAME')).get('Contents')
         file_list = []
@@ -91,9 +90,11 @@ class AWS_Main:
         
         for file in user_bucket.objects.all():
             if(file.key == file_key):
-                print('Sorry! Cannot copy a file that is already present')
-                print('DOWNLOAD here using URL to already existing file on local S3 bucket: ')
+                st.write('Sorry !!! Cannot copy a file that is already present in the user bucket.')
+                st.write('DOWNLOAD the file from the below link using URL to already existing file on local S3 bucket: ')
                 return url_s3, url_noaa
 
         user_bucket.copy(copy_source, file_key)
-        return url_s3, url_noaa
+        st.write('File Link in S3 Bucket !!!\n', url_s3)
+        # st.write('File Link in NOAA Bucket !!!\n', url_noaa)
+        # return url_s3, url_noaa

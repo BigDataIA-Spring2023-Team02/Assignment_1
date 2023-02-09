@@ -1,1 +1,1 @@
-CREATE TABLE IF NOT EXISTS GEOS18 (ID number, Product_Name text, Year number, Day number, Hour number);
+CREATE TABLE IF NOT EXISTS GEOS18 (ID number, Product_Name text, Year number, Day number, Hour text);

@@ -5,7 +5,6 @@ import pandas as pd
 from dotenv import load_dotenv
 import streamlit as st
 
-@st.cache
 class Scrape_Data:
     def __init__(self):
         load_dotenv()
