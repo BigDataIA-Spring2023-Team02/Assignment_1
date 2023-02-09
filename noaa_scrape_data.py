@@ -3,7 +3,9 @@ import boto3
 import logging
 import pandas as pd
 from dotenv import load_dotenv
+import streamlit as st
 
+@st.cache
 class Scrape_Data:
     def __init__(self):
         load_dotenv()
@@ -23,7 +25,6 @@ class Scrape_Data:
         
         self.geos_bucket_name = "noaa-goes18"
         self.geos18_data_dict = {'ID': [], 'Product_Name': [], 'Year': [], 'Day': [], 'Hour': []}
-
         self.nexrad_bucket_name = "noaa-nexrad-level2"
         self.nexrad_data_dict = {'ID': [], 'Year': [], 'Month': [], 'Day': [], 'NexRad Station Code': []}
 
@@ -53,6 +54,8 @@ class Scrape_Data:
                     id += 1
         
         geos18_data = pd.DataFrame(self.geos18_data_dict)
+        geos18_data.to_csv('geos18_data.csv', index = False, na_rep = 'Unknown', encoding = 'utf-8')
+
         return geos18_data
 
     def nexrad_data(self):
@@ -83,4 +86,6 @@ class Scrape_Data:
                         id += 1
         
         nexrad_data = pd.DataFrame(self.nexrad_data_dict)
+        nexrad_data.to_csv('nexrad_data.csv', index = False, na_rep = 'Unknown', encoding = 'utf-8')
+
         return nexrad_data
