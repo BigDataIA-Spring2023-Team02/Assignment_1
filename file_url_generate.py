@@ -64,12 +64,12 @@ def goes18_filename_link_generation(product_name, year_input, day_input, hour_in
         day = day_input
         hour = hour_input
         file = file_input
-        url = start_url + '/' + product + '/' + year + '/' + day + '/' + hour + '/' + file
+        url = start_url + product + '/' + year + '/' + day + '/' + hour + '/' + file
         
-        response = requests.get(url)
-        if(response.status_code == 404):
-            print("Sorry! No such file exists.")
-            raise SystemExit()
+        # response = requests.get(url)
+        # if(response.status_code == 404):
+        #     print("Sorry! No such file exists.")
+        #     raise SystemExit()
         return url
         
     except:
@@ -77,18 +77,18 @@ def goes18_filename_link_generation(product_name, year_input, day_input, hour_in
 
 def nexrad_filename_link_generation(product_name, year_input, day_input, hour_input, file_input):
     try:
-        start_url = "https://noaa-goes18.s3.amazonaws.com/"
+        start_url = "https://noaa-nexrad-level2.s3.amazonaws.com/"
         product = product_name
         year = year_input
         day = day_input
         hour = hour_input
         file = file_input
-        url = start_url + '/' + product + '/' + year + '/' + day + '/' + hour + '/' + file
+        url = start_url + product + '/' + year + '/' + day + '/' + hour + '/' + file
         
-        response = requests.get(url)
-        if(response.status_code == 404):
-            print("Sorry! No such file exists.")
-            raise SystemExit()
+        # response = requests.get(url)
+        # if(response.status_code == 404):
+        #     print("Sorry! No such file exists.")
+        #     raise SystemExit()
         return url
         
     except:
