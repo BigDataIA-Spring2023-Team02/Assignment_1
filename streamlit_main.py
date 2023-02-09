@@ -7,6 +7,9 @@ from aws_main import *
 from noaa_scrape_data import *
 import pandas as pd
 from sqlite import *
+import geopandas as gpd
+import matplotlib
+import matplotlib.pyplot as plt 
 
 LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
 logging.basicConfig(
@@ -19,8 +22,10 @@ aws_main = AWS_Main()
 noaa_scrape = Scrape_Data()
 goes_sqlite = GoesSqlite()
 nexrad_sqlite = NexradSqlite()
+nexradmap_sqlite = NexradMapSqlite()
 geos_data = goes_sqlite.main()
 nexrad_data = nexrad_sqlite.main()
+nexradmap_data = nexradmap_sqlite.main()
 
 def geos_search_field(satellite_input):
     st.markdown("<h3 style='text-align: center;'>Search By Field</h1>", unsafe_allow_html=True)
@@ -119,7 +124,42 @@ def nexrad_dataset():
     elif option == 'Search By Filename':
         nexrad_search_filename(satellite_input)
 
-def nexrad_mapdata():
+def nexrad_mapdata(nexradusweather_data):
+    st.markdown("<h2 style='text-align: center;'>Nexrad-Map Geo-location</h1>", unsafe_allow_html=True)
+    st.map(nexradmap_data)
+
+    path = "tl_2022_us_state/tl_2022_us_state.shp"
+    df = gpd.read_file(path)
+    df.crs = "epsg:4326"
+    df2 = df.iloc[[35,36],:] 
+    df3 = df.iloc[[40,41],:]
+    df.drop([35,36,41,40], axis=0, inplace=True)
+
+    geo_data = gpd.GeoDataFrame(nexradusweather_data, geometry = gpd.points_from_xy(nexradusweather_data.LONGITUDE,nexradusweather_data.LATITUDE))
+    geo_data2 = geo_data.iloc[[148],:]
+    geo_data3 = geo_data.iloc[[142,143,144,145,146,147,155],:]
+    geo_data.drop([148,142,143,144,145,146,147,155], axis=0, inplace=True)
+
+    st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Mainland USA</h3>", unsafe_allow_html=True)
+    axis = df.plot(cmap='magma')
+    geo_data.plot(ax = axis, color = 'lightgreen')
+    # plt.title('Nexrad Locations in Mainland USA')
+    figure = plt.gcf()
+    st.pyplot(plt)
+
+    st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Guam</h3>", unsafe_allow_html=True)
+    axis = df2.plot(cmap='magma')
+    geo_data2.plot(ax = axis, color = 'lightgreen')
+    # plt.title('Nexrad Locations in Guam')
+    figure = plt.gcf()
+    st.pyplot(plt)
+
+    st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Alaska</h3>", unsafe_allow_html=True)
+    axis = df3.plot(cmap = 'magma')
+    geo_data3.plot(ax = axis, color = 'lightgreen')
+    # plt.title('Nexrad Locations in Alaska')
+    figure = plt.gcf()
+    st.pyplot(plt)
 
     return
 
@@ -140,7 +180,9 @@ def main():
     
     elif page == "NexRad Map Locations":
         st.markdown("<h2 style='text-align: center;'>Data Exploration of the NexRad dataset</h1>", unsafe_allow_html=True)
-        nexrad_mapdata()
+        nexradusweather_data = pd.read_csv("Data/Weather_Radar_Stations.csv")
+        nexradusweather_data.rename(columns = {'Y':'LATITUDE', 'X':'LONGITUDE'}, inplace = True)
+        nexrad_mapdata(nexradusweather_data)
     
     return
 
