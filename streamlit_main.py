@@ -22,10 +22,6 @@ aws_main = AWS_Main()
 noaa_scrape = Scrape_Data()
 
 geos_data = noaa_scrape.geos18_data()
-df = pd.DataFrame(columns=['col1'])
-
-# write the initial dataframe to the CSV file
-df.to_csv("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv", index=False)
 
 goessqlite = GoesSqlite()
 geos_data = goessqlite.main()
@@ -73,28 +69,6 @@ def geos_dataset():
                             #client.download_file(bucket_name, file_name, "meet.txt") 
                             #with open("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.xlsx","a") as file:file.write(url)
                            # aws_main.list_files_in_user_bucket()
-
-                            df = pd.read_csv("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv")
-                            df1 = pd.DataFrame([[url]], columns=['col1'])
-                            df = pd.concat([df, df1], ignore_index=True)
-
-                            df1.to_csv("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv", index=False)
-                            client.download_file(bucket_name, file_name, "/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv")
-
-
-                            client.upload_file("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv",bucket_name,file_name)
-
-                            df = pd.read_csv("/Users/siddhisawant/Downloads/BigDataSys/GitHub/Assignment_1/meet.csv")
-                            df1 = pd.DataFrame([[url]], columns=['col1'])
-                            df = pd.concat([df, df1], ignore_index=True)
-
-                            df1.to_csv("/Users/siddhisawant/Downloads/BigDataSys/GitHub/Assignment_1/meet.csv", index=False)
-                            client.download_file(bucket_name, file_name, "/Users/siddhisawant/Downloads/BigDataSys/GitHub/Assignment_1/meet.csv")
-
-
-                            client.upload_file("/Users/siddhisawant/Downloads/BigDataSys/GitHub/Assignment_1/meet.csv",bucket_name,file_name)
-
-
                             st.write('Generated URL Link:\n', url)
                         
                         if st.button('Download to S3 Bucket'):
@@ -149,18 +123,6 @@ def nexrad_dataset():
                                 #client.download_file(bucket_name, file_name, "meet.txt") 
                                 #with open("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.xlsx","a") as file:file.write(url)
                             # aws_main.list_files_in_user_bucket()
-                            df = pd.read_csv("/Users/siddhisawant/Downloads/BigDataSys/GitHub/Assignment_1/meet.csv")
-                            df1 = pd.DataFrame([[url]], columns=['col1'])
-                            df = pd.concat([df, df1], ignore_index=True)
-
-                            df1.to_csv("/Users/siddhisawant/Downloads/BigDataSys/GitHub/Assignment_1/meet.csv", index=False)
-                            client.download_file(bucket_name, file_name, "/Users/siddhisawant/Downloads/BigDataSys/GitHub/Assignment_1/meet.csv")
-
-
-                            client.upload_file("/Users/siddhisawant/Downloads/BigDataSys/GitHub/Assignment_1/meet.csv",bucket_name,file_name)
-
-                            st.write('Generated URL Link:\n', url)
-                        
                         if st.button('Download to S3 Bucket'):
                             st.write("Inside Download Button")
                             # upload_file_to_user_bucket()
