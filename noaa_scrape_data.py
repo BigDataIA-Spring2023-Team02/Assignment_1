@@ -2,10 +2,12 @@ import os
 import boto3
 import logging
 import pandas as pd
+from dotenv import load_dotenv
 
 class Scrape_Data:
     def __init__(self):
-
+        load_dotenv()
+        
         LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
         logging.basicConfig(
             format='%(asctime)s %(levelname)-8s %(message)s',

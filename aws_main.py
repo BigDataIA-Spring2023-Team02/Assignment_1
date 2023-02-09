@@ -51,6 +51,7 @@ class AWS_Main:
             file_list.append(file_path[-1])
         return file_list
 
+
     def list_files_in_noaa_nexrad_bucket(self):
         logging.debug("fetching objects in noaa nexrad s3 bucket")
         # year_input, month_input, day_input, station_code
@@ -68,3 +69,24 @@ class AWS_Main:
             file_path = file_path.split('/')
             file_list.append(file_path[-1])
         return file_list
+
+
+    def list_files_in_noaa_nexrad_bucket(self,year,month,day,station):
+        logging.debug("fetching objects in noaa nexrad s3 bucket")
+        # year_input, month_input, day_input, station_code
+        year_input = year
+        month_input = month
+        day_input = day
+        station_code = station
+        prefix = year_input + '/' + month_input + '/' + day_input + '/' + station_code + '/'
+        geos_bucket = self.s3client.list_objects(Bucket = self.nexrad_bucket_name, Prefix = prefix).get('Contents')
+        logging.info("Printing files from NEXRAD bucket")
+        print("Files available to download from the selected location:")
+        file_list = []
+        for objects in geos_bucket:
+            file_path = objects['Key']
+            file_path = file_path.split('/')
+            file_list.append(file_path[-1])
+        return file_list
+
+
