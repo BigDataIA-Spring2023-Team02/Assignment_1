@@ -1,9 +1,11 @@
 import os
 import logging
 import streamlit as st
+import boto3
 from file_url_generate import *
 from aws_main import *
 from noaa_scrape_data import *
+import pandas as pd
 
 LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
 logging.basicConfig(
@@ -12,35 +14,79 @@ logging.basicConfig(
     datefmt='%Y-%m-%d %H:%M:%S',
     filename='logs.log')
 
+aws_main = AWS_Main()
+noaa_scrape = Scrape_Data()
+geos_data = noaa_scrape.geos18_data()
+df = pd.DataFrame(columns=['col1'])
+
+# write the initial dataframe to the CSV file
+df.to_csv("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv", index=False)
+
+
+
+
 def geos_dataset():
     option = st.selectbox('Select the option to search file', ('--Select Search Type--', 'Search By Field', 'Search By Filename'))
-    
-    try:
-        if option == '--Select Search Type--':
-            st.error('Select an input field')
-        elif option == 'Search By Field':
-            st.markdown("<h3 style='text-align: center;'>Search By Field</h1>", unsafe_allow_html=True)
-            
-            product_input = st.selectbox('Select the Product Name', ['ABI-L1b-RadC'])
-            year_input = st.selectbox('Year', range(2020, 2023))
-            day_input = st.selectbox('Day', range(1, 365))
-            hour_input = st.selectbox('Hour', range(00, 24))
-            file_input = st.selectbox('Select the File Name', [''])
-            
-            goes18_filename_link_generation(product_input, year_input, day_input, hour_input, file_input)
-        elif option == 'Search By Filename':
-            st.markdown("<h3 style='text-align: center;'>Search By Filename</h1>", unsafe_allow_html=True)
-            file_name = st.text_input('NOAA GEOS-18 Filename',)
-            
-            try:
-                if st.button('Generate URL Link'):
-                    url = goes_18_link_generation(file_name)
-                    st.write('Generated URL Link:\n', url)
-            except ValueError:
-                st.error('Oops! Unable to Generate')
 
-    except ValueError:
-        st.error('Oops! Did not find any input')
+    if option == '--Select Search Type--':
+        st.error('Select an input field')
+    elif option == 'Search By Field':
+        st.markdown("<h3 style='text-align: center;'>Search By Field</h1>", unsafe_allow_html=True)
+        
+        product_input = st.selectbox('Select Product Name', geos_data['Product_Name'].unique())
+        if product_input:
+            years = geos_data[geos_data['Product_Name'] == product_input]['Year'].unique()
+            year_input = st.selectbox('Select Year', years)
+            if year_input:
+                day = geos_data[geos_data['Year'] == year_input]['Day'].unique()
+                day_input = st.selectbox('Select Day', day)
+                if day_input:
+                    hour = geos_data[geos_data['Day'] == day_input]['Hour'].unique()
+                    hour_input = st.selectbox('Select Hour', hour)
+                    if hour_input:
+                        files_list = aws_main.list_files_in_noaa_goes18_bucket(product_input, year_input, day_input, hour_input)
+                        file_input = st.selectbox('Select File Name', files_list)
+
+                        if st.button('Generate URL Link'):
+                            url = goes18_filename_link_generation(product_input, year_input, day_input, hour_input, file_input)
+                            
+                            bucket_name = "damg-7245-projects"
+                            file_name = "/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv"
+
+                            client = boto3.client('s3',region_name = 'us-east-1',aws_access_key_id = os.environ.get('AWS_ACCESS_KEY'),aws_secret_access_key = os.environ.get('AWS_SECRET_KEY'))
+
+                            #client.download_file(bucket_name, file_name, "meet.txt") 
+                            #with open("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.xlsx","a") as file:file.write(url)
+                           # aws_main.list_files_in_user_bucket()
+                            df = pd.read_csv("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv")
+                            df1 = pd.DataFrame([[url]], columns=['col1'])
+                            df = pd.concat([df, df1], ignore_index=True)
+
+                            df1.to_csv("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv", index=False)
+                            client.download_file(bucket_name, file_name, "/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv")
+
+
+                            client.upload_file("/Users/ajinabraham/Documents/GitHub/BigData/Assignment_1/meet.csv",bucket_name,file_name)
+
+                            st.write('Generated URL Link:\n', url)
+                        
+                        if st.button('Download to S3 Bucket'):
+                            st.write("Inside Download Button")
+                            # upload_file_to_user_bucket()
+                            # url_3, url_noaa = upload_file_to_user_bucket()
+                            # st.write('File Link in S3 Bucket !!!\n', url_s3)
+                            # st.write('File Link in NOAA Bucket !!!\n', url_noaa)
+
+    elif option == 'Search By Filename':
+        st.markdown("<h3 style='text-align: center;'>Search By Filename</h1>", unsafe_allow_html=True)
+        file_name = st.text_input('NOAA GEOS-18 Filename',)
+        
+        try:
+            if st.button('Generate URL Link'):
+                url = goes_18_link_generation(file_name)
+                st.write('Generated URL Link:\n', url)
+        except ValueError:
+            st.error('Oops! Unable to Generate')
 
 def main():
     page = st.sidebar.selectbox("Choose a page", ["--Select Data--", "GEOS Data", "NexRad Data"])

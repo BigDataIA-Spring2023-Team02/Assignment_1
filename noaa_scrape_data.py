@@ -13,72 +13,72 @@ class Scrape_Data:
             datefmt='%Y-%m-%d %H:%M:%S',
             filename='logs.log')
 
-        s3client = boto3.client('s3',
+        self.s3client = boto3.client('s3',
                             region_name='us-east-1',
                             aws_access_key_id = os.environ.get('AWS_ACCESS_KEY'),
                             aws_secret_access_key = os.environ.get('AWS_SECRET_KEY')
                             )
         
-        geos_bucket_name = "noaa-goes18"
-        geos18_data_dict = {'ID': [], 'Product_Name': [], 'Year': [], 'Day': [], 'Hour': []}
+        self.geos_bucket_name = "noaa-goes18"
+        self.geos18_data_dict = {'ID': [], 'Product_Name': [], 'Year': [], 'Day': [], 'Hour': []}
 
-        nexrad_bucket_name = "noaa-nexrad-level2"
-        nexrad_data_dict = {'ID': [], 'Year': [], 'Month': [], 'Day': [], 'NexRad Station Code': []}
+        self.nexrad_bucket_name = "noaa-nexrad-level2"
+        self.nexrad_data_dict = {'ID': [], 'Year': [], 'Month': [], 'Day': [], 'NexRad Station Code': []}
 
-        def geos18_data():
-            id = 1
-            prefix = "ABI-L1b-RadC/"
-            result = s3client.list_objects(Bucket = geos_bucket_name, Prefix = prefix, Delimiter = '/')
+    def geos18_data(self):
+        id = 1
+        prefix = "ABI-L1b-RadC/"
+        result = self.s3client.list_objects(Bucket = self.geos_bucket_name, Prefix = prefix, Delimiter = '/')
+        
+        for i in result.get('CommonPrefixes'):
+            path = i.get('Prefix').split('/')
+            prefix_2 = prefix + path[-2] + "/"
+            sub_folder = self.s3client.list_objects(Bucket = self.geos_bucket_name, Prefix = prefix_2, Delimiter = '/')
+            
+            for j in sub_folder.get('CommonPrefixes'):
+                sub_path = j.get('Prefix').split('/')
+                prefix_3 = prefix_2 + sub_path[-2] + "/"
+                sub_sub_folder = self.s3client.list_objects(Bucket = self.geos_bucket_name, Prefix = prefix_3, Delimiter = '/')
+                
+                for k in sub_sub_folder.get('CommonPrefixes'):
+                    sub_sub_path = k.get('Prefix').split('/')
+                    sub_sub_path = sub_sub_path[:-1]
+                    self.geos18_data_dict['ID'].append(id)
+                    self.geos18_data_dict['Product_Name'].append(sub_sub_path[0])
+                    self.geos18_data_dict['Year'].append(sub_sub_path[1])
+                    self.geos18_data_dict['Day'].append(sub_sub_path[2])
+                    self.geos18_data_dict['Hour'].append(sub_sub_path[3])
+                    id += 1
+        
+        geos18_data = pd.DataFrame(self.geos18_data_dict)
+        return geos18_data
+
+    def nexrad_data(self):
+        id = 1
+        years = ['2022','2023']
+        for year in years:
+            prefix = year + '/'
+            result = self.s3client.list_objects(Bucket = self.nexrad_bucket_name, Prefix = prefix, Delimiter = '/')
             
             for i in result.get('CommonPrefixes'):
                 path = i.get('Prefix').split('/')
                 prefix_2 = prefix + path[-2] + "/"
-                sub_folder = s3client.list_objects(Bucket = geos_bucket_name, Prefix = prefix_2, Delimiter = '/')
+                sub_folder = self.s3client.list_objects(Bucket = self.nexrad_bucket_name, Prefix = prefix_2, Delimiter = '/')
                 
                 for j in sub_folder.get('CommonPrefixes'):
                     sub_path = j.get('Prefix').split('/')
                     prefix_3 = prefix_2 + sub_path[-2] + "/"
-                    sub_sub_folder = s3client.list_objects(Bucket = geos_bucket_name, Prefix = prefix_3, Delimiter = '/')
-                    
+                    sub_sub_folder = self.s3client.list_objects(Bucket = self.nexrad_bucket_name, Prefix = prefix_3, Delimiter = '/')
+
                     for k in sub_sub_folder.get('CommonPrefixes'):
                         sub_sub_path = k.get('Prefix').split('/')
                         sub_sub_path = sub_sub_path[:-1]
-                        geos18_data_dict['ID'].append(id)
-                        geos18_data_dict['Product_Name'].append(sub_sub_path[0])
-                        geos18_data_dict['Year'].append(sub_sub_path[1])
-                        geos18_data_dict['Day'].append(sub_sub_path[2])
-                        geos18_data_dict['Hour'].append(sub_sub_path[3])
+                        self.nexrad_data_dict['ID'].append(id)
+                        self.nexrad_data_dict['Year'].append(sub_sub_path[0])
+                        self.nexrad_data_dict['Month'].append(sub_sub_path[1])
+                        self.nexrad_data_dict['Day'].append(sub_sub_path[2])
+                        self.nexrad_data_dict['NexRad Station Code'].append(sub_sub_path[3])
                         id += 1
-            
-            geos18_data = pd.DataFrame(geos18_data_dict)
-            return geos18_data
-
-        def nexrad_data():
-            id = 1
-            years = ['2022','2023']
-            for year in years:
-                prefix = year + '/'
-                result = s3client.list_objects(Bucket = nexrad_bucket_name, Prefix = prefix, Delimiter = '/')
-                
-                for i in result.get('CommonPrefixes'):
-                    path = i.get('Prefix').split('/')
-                    prefix_2 = prefix + path[-2] + "/"
-                    sub_folder = s3client.list_objects(Bucket = nexrad_bucket_name, Prefix = prefix_2, Delimiter = '/')
-                    
-                    for j in sub_folder.get('CommonPrefixes'):
-                        sub_path = j.get('Prefix').split('/')
-                        prefix_3 = prefix_2 + sub_path[-2] + "/"
-                        sub_sub_folder = s3client.list_objects(Bucket = nexrad_bucket_name, Prefix = prefix_3, Delimiter = '/')
-
-                        for k in sub_sub_folder.get('CommonPrefixes'):
-                            sub_sub_path = k.get('Prefix').split('/')
-                            sub_sub_path = sub_sub_path[:-1]
-                            nexrad_data_dict['ID'].append(id)
-                            nexrad_data_dict['Year'].append(sub_sub_path[0])
-                            nexrad_data_dict['Month'].append(sub_sub_path[1])
-                            nexrad_data_dict['Day'].append(sub_sub_path[2])
-                            nexrad_data_dict['NexRad Station Code'].append(sub_sub_path[3])
-                            id += 1
-            
-            nexrad_data = pd.DataFrame(nexrad_data_dict)
-            return nexrad_data
+        
+        nexrad_data = pd.DataFrame(self.nexrad_data_dict)
+        return nexrad_data
