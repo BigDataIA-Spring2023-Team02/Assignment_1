@@ -1,5 +1,29 @@
-from file_url_generate import goes_18_link_generation, nexrad_link_generation
+import os
+import boto3
+import time
+from dotenv import load_dotenv
 import pandas as pd
+from file_url_generate import goes_18_link_generation, nexrad_link_generation
+
+load_dotenv()
+
+clientLogs = boto3.client('logs',
+                        region_name='us-east-1',
+                        aws_access_key_id = os.environ.get('AWS_LOGS_ACCESS_KEY'),
+                        aws_secret_access_key = os.environ.get('AWS_LOGS_SECRET_KEY')
+                        )
+
+def write_logs(message: str):
+    clientLogs.put_log_events(
+        logGroupName = "Assignment01-logs",
+        logStreamName = "Test-Logs",
+        logEvents = [
+            {
+                'timestamp' : int(time.time() * 1e3),
+                'message' : message
+            }
+        ]
+    )
 
 goes_url = "https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/export?format=csv"
 goes_df = pd.read_csv(goes_url)
@@ -16,6 +40,8 @@ def test_case01():
     nexrad_url = nexrad_df['Full file name'][1]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 1")
+    time.sleep(1)
 
 def test_case02():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][2])
@@ -24,6 +50,8 @@ def test_case02():
     nexrad_url = nexrad_df['Full file name'][2]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 2")
+    time.sleep(1)
 
 def test_case03():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][3])
@@ -32,6 +60,8 @@ def test_case03():
     nexrad_url = nexrad_df['Full file name'][3]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 3")
+    time.sleep(1)
 
 def test_case04():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][4])
@@ -40,6 +70,8 @@ def test_case04():
     nexrad_url = nexrad_df['Full file name'][4]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 4")
+    time.sleep(1)
 
 def test_case05():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][5])
@@ -48,6 +80,8 @@ def test_case05():
     nexrad_url = nexrad_df['Full file name'][5]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 5")
+    time.sleep(1)
 
 def test_case06():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][6])
@@ -56,6 +90,8 @@ def test_case06():
     nexrad_url = nexrad_df['Full file name'][6]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 6")
+    time.sleep(1)
 
 def test_case07():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][7])
@@ -64,6 +100,8 @@ def test_case07():
     nexrad_url = nexrad_df['Full file name'][7]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 7")
+    time.sleep(1)
 
 def test_case08():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][8])
@@ -72,6 +110,8 @@ def test_case08():
     nexrad_url = nexrad_df['Full file name'][8]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 8")
+    time.sleep(1)
 
 def test_case09():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][9])
@@ -80,6 +120,8 @@ def test_case09():
     nexrad_url = nexrad_df['Full file name'][9]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 9")
+    time.sleep(1)
 
 def test_case10():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][10])
@@ -88,6 +130,8 @@ def test_case10():
     nexrad_url = nexrad_df['Full file name'][10]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 10")
+    time.sleep(1)
 
 def test_case11():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][11])
@@ -96,6 +140,8 @@ def test_case11():
     nexrad_url = nexrad_df['Full file name'][11]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 11")
+    time.sleep(1)
 
 def test_case12():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][12])
@@ -104,3 +150,5 @@ def test_case12():
     nexrad_url = nexrad_df['Full file name'][12]
     assert goes_generated_url == goes_url
     assert nexrad_generated_url == nexrad_url
+    write_logs(f"Ran tests case for Team 12")
+    time.sleep(1)
