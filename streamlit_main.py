@@ -10,6 +10,9 @@ from sqlite import *
 import geopandas as gpd
 import matplotlib
 import matplotlib.pyplot as plt 
+import folium
+from streamlit_folium import st_folium
+from streamlit_folium import folium_static
 
 LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
 logging.basicConfig(
@@ -141,6 +144,19 @@ def nexrad_mapdata(nexradusweather_data):
     st.markdown("<h2 style='text-align: center;'>Nexrad-Map Geo-location</h1>", unsafe_allow_html=True)
     logging.info('Running NEXRAD Map Data Exploration')
     st.map(nexradmap_data)
+    
+    m = folium.Map(location=[20,0], tiles="OpenStreetMap", zoom_start=2)
+    
+    # add marker one by one on the map
+    for i in range(0,len(nexradmap_data)):
+        folium.Marker(
+        location = [nexradmap_data.iloc[i]['LAT'], nexradmap_data.iloc[i]['LON']],
+        popup = (nexradmap_data.iloc[i]['ICAO'],nexradmap_data.iloc[i]['NAME'])
+        ).add_to(m)
+
+    # Show the map again
+    st.markdown("<h2 style='text-align: center;'>Nexrad-Map Location-AND-Station-Names</h1>", unsafe_allow_html=True)
+    folium_static(m)
 
     path = "tl_2022_us_state/tl_2022_us_state.shp"
     df = gpd.read_file(path)
