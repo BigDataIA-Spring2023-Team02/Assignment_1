@@ -60,9 +60,9 @@ class AWS_Main:
         day_input = day
         station_code = station
         prefix = year_input + '/' + month_input + '/' + day_input + '/' + station_code + '/'
-        geos_bucket = self.s3client.list_objects(Bucket = self.nexrad_bucket_name, Prefix = prefix).get('Contents')
+        nexrad_bucket = self.s3client.list_objects(Bucket = self.nexrad_bucket_name, Prefix = prefix).get('Contents')
         file_list = []
-        for objects in geos_bucket:
+        for objects in nexrad_bucket:
             file_path = objects['Key']
             file_path = file_path.split('/')
             file_list.append(file_path[-1])

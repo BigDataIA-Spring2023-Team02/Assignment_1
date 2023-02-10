@@ -40,6 +40,7 @@ def goes_18_link_generation(file):
             return url, selected_file_key
         
         else:
+            st.error('Please Check Input Filename')
             logging.error('Invalid Filename format, please follow format for GOES18!')
             raise SystemExit()
     

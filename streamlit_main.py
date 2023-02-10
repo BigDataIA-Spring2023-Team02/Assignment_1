@@ -59,7 +59,7 @@ def geos_search_filename(satellite_input):
     file_name = st.text_input('NOAA GEOS-18 Filename',)
 
     try:
-        if st.button('Download to S3 Bucket'):
+        if st.button('Copy to User S3 Bucket'):
             url, selected_file_key = goes_18_link_generation(file_name)
             url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file_key, file_name, satellite_input)
             logging.info('File URL in User S3 Bucket',url_s3)
@@ -103,7 +103,7 @@ def nexrad_search_filename(satellite_input):
     file_name = st.text_input('NOAA GEOS-18 Filename',)
     
     try:
-        if st.button('Download to S3 Bucket'):
+        if st.button('Copy to User S3 Bucket'):
             url, selected_file_key = nexrad_link_generation(file_name)
             url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file_key, file_name, satellite_input)
             logging.info('File URL in User S3 Bucket',url_s3)
@@ -157,21 +157,18 @@ def nexrad_mapdata(nexradusweather_data):
     st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Mainland USA</h3>", unsafe_allow_html=True)
     axis = df.plot(cmap='magma')
     geo_data.plot(ax = axis, color = 'lightgreen')
-    # plt.title('Nexrad Locations in Mainland USA')
     figure = plt.gcf()
     st.pyplot(plt)
 
     st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Guam</h3>", unsafe_allow_html=True)
     axis = df2.plot(cmap='magma')
     geo_data2.plot(ax = axis, color = 'lightgreen')
-    # plt.title('Nexrad Locations in Guam')
     figure = plt.gcf()
     st.pyplot(plt)
 
     st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Alaska</h3>", unsafe_allow_html=True)
     axis = df3.plot(cmap = 'magma')
     geo_data3.plot(ax = axis, color = 'lightgreen')
-    # plt.title('Nexrad Locations in Alaska')
     figure = plt.gcf()
     st.pyplot(plt)
 
