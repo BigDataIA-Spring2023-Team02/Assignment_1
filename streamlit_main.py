@@ -111,7 +111,7 @@ def nexrad_search_field(satellite_input):
                 station_code_input = st.selectbox('NexRad Station Code', station_code)
                 if station_code_input:
                     files_list = aws_main.list_files_in_noaa_nexrad_bucket(year_input, month_input, day_input, station_code_input)
-                    file_input = st.selectbox('Select File Name')
+                    file_input = st.selectbox('Select File Name',files_list)
                     write_logs(f"Selected file to copy to user bucket")
 
                     if st.button('Copy to User S3 Bucket ©️'):
