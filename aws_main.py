@@ -84,7 +84,7 @@ class AWS_Main:
             url_s3 = 'https://damg-7245-projects.s3.amazonaws.com/' + file_key
             url_noaa = 'https://noaa-nexrad-level2.s3.amazonaws.com/' + selected_file
             copy_source = {
-                'Bucket': self._bucket_name,
+                'Bucket': self.nexrad_bucket_name,
                 'Key': selected_file
                 }
         
@@ -92,6 +92,7 @@ class AWS_Main:
             if(file.key == file_key):
                 st.write('Sorry !!! Cannot copy a file that is already present in the user bucket.')
                 st.write('DOWNLOAD the file from the below link using URL to already existing file on local S3 bucket: ')
+                st.write('File Link in S3 Bucket !!!\n', url_s3)
                 return url_s3, url_noaa
 
         user_bucket.copy(copy_source, file_key)
