@@ -131,3 +131,11 @@ dmypy.json
 # User defined
 assgn1_venv
 assgn_venv
+
+# great_expectations
+great_expectations/plugins
+great_expectations/data
+great_expectations/checkpoints
+great_expectations/expectations/.ge_store_backend_id
+great_expectations/uncommitted/validations
+great_expectations/uncommitted/config_variables.yml
