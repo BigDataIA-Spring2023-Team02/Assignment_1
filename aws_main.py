@@ -84,7 +84,7 @@ class AWS_Main:
             url_s3 = 'https://damg-7245-projects.s3.amazonaws.com/' + file_key
             url_noaa = 'https://noaa-nexrad-level2.s3.amazonaws.com/' + selected_file
             copy_source = {
-                'Bucket': self.geos_bucket_name,
+                'Bucket': self._bucket_name,
                 'Key': selected_file
                 }
         
@@ -96,5 +96,5 @@ class AWS_Main:
 
         user_bucket.copy(copy_source, file_key)
         st.write('File Link in S3 Bucket !!!\n', url_s3)
-        # st.write('File Link in NOAA Bucket !!!\n', url_noaa)
-        # return url_s3, url_noaa
+        st.write('File Link in NOAA Bucket !!!\n', url_noaa)
+        return url_s3, url_noaa
