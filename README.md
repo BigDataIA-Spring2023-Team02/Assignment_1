@@ -52,17 +52,20 @@ env\Scripts\activate     # on Windows
 ```
 
 * Install the required packages from requirements.txt file
-```pip install -r requirements.txt
+```bash
+pip install -r requirements.txt
 ```
 
 * Run Streamlit app
-```streamlit run app.py
+```bash
+streamlit run streamlit_main.py
 ```
 
 * Interacting with AWS S3:
 In the Streamlit app, we are using Boto3 library to access AWS S3 bucket and retrieve data file. You will need to provide your AWS credentials to access the S3 bucket. Here's an example of how to access the S3 bucket and retrieve the data file using Boto3:
 
-```import boto3
+```bash
+import boto3
 
 s3 = boto3.client("s3", aws_access_key_id="<your_access_key>",
                   aws_secret_access_key="<your_secret_key>")
@@ -73,6 +76,9 @@ Test the Streamlit app locally to make sure it's working as expected.
 
 * Deploy the Streamlit app to a cloud platform:
 We have deployed the Streamlit app to a cloud platform such as AWS Elastic Beanstalk, Heroku, or Google Cloud Platform. You may need to add a requirements.txt file to your repository to specify the required packages for the deployment.
+
+* CodeLabs Documentation for the assignment flow
+We have created the documentation for assignment flow in CodeLabs to get started with the assignment for a new user. Here is the link to the [file](https://codelabs-preview.appspot.com/?file_id=1TBcYrdoadQK-Ls0QfJWQXjo0yJjhgUBBq-kn7Q2gN9E#0).
 
 ### Deployed App
 App is deployed on Streamlit Cloud and accessed via [link](https://bigdataia-spring2023-team02-assignment-1-streamlit-main-em4swm.streamlit.app)
