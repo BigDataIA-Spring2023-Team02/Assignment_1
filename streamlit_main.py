@@ -74,7 +74,7 @@ def geos_search_field(satellite_input):
                     
                     if st.button('Copy to User S3 Bucket ©️'):
                         selected_file = product_input + '/' + year_input + '/' + day_input + '/' + hour_input + '/' + file_input
-                        write_logs(f"Selected file key:",selected_file)
+                        write_logs(f"Selected file key:")
                         url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file, file_input, satellite_input)
                         write_logs(f"File URL in User S3 Bucket")
                         write_logs(f"File URL in NOAA S3 Bucket")
@@ -118,8 +118,8 @@ def nexrad_search_field(satellite_input):
                         selected_file = year_input + '/' + month_input + '/' + day_input + '/' + station_code_input + '/' + file_input
                         write_logs(f"Selected file key:")
                         url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file, file_input, satellite_input)
-                        write_logs(f"File URL in User S3 Bucket",url_s3)
-                        write_logs(f"File URL in NOAA S3 Bucket",url_noaa)
+                        write_logs(f"File URL in User S3 Bucket")
+                        write_logs(f"File URL in NOAA S3 Bucket")
 
 def nexrad_search_filename(satellite_input):
     st.markdown("<h3 style='text-align: center;'>Search Through Filename 🔎</h1>", unsafe_allow_html=True)
