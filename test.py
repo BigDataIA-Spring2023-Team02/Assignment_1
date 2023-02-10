@@ -8,6 +8,8 @@ goes_df = goes_df[['File name','Full file name']]
 nexrad_url = "https://docs.google.com/spreadsheets/d/1o1CLsm5OR0gH5GHbTsPWAEOGpdqqS49-P5e14ugK37Q/export?format=csv&gid=651299232"
 nexrad_df = pd.read_csv(nexrad_url)
 nexrad_df = nexrad_df[['File name','Full file name']]
+# print(goes_18_link_generation(goes_df['File name'][7]))
+# print(goes_df['File name'][7])
 
 def test_case01():
     goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][1])
