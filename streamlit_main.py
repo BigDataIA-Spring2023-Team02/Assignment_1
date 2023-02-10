@@ -13,6 +13,8 @@ import matplotlib.pyplot as plt
 import folium
 from streamlit_folium import st_folium
 from streamlit_folium import folium_static
+from PIL import Image
+import base64
 
 LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
 logging.basicConfig(
@@ -31,7 +33,7 @@ nexrad_data = nexrad_sqlite.main()
 nexradmap_data = nexradmap_sqlite.main()
 
 def geos_search_field(satellite_input):
-    st.markdown("<h3 style='text-align: center;'>Search By Field</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>Search Through Fields 🔎</h1>", unsafe_allow_html=True)
     logging.info('Into GEOS Data by Search Field Inputs')
 
     product_input = st.selectbox('Select Product Name', geos_data['Product_Name'].unique())
@@ -49,7 +51,7 @@ def geos_search_field(satellite_input):
                     file_input = st.selectbox('Select File Name', files_list)
                     logging.info('Selected file to copy to user bucket:',file_input)
 
-                    if st.button('Copy to User S3 Bucket'):
+                    if st.button('Copy to User S3 Bucket ©️'):
                         selected_file = product_input + '/' + year_input + '/' + day_input + '/' + hour_input + '/' + file_input
                         logging.info('Selected file key:',selected_file)
                         url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file, file_input, satellite_input)
@@ -57,12 +59,12 @@ def geos_search_field(satellite_input):
                         logging.info('File URL in NOAA S3 Bucket',url_noaa)
 
 def geos_search_filename(satellite_input):
-    st.markdown("<h3 style='text-align: center;'>Search By Filename</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>Search Through Filename 🔎</h1>", unsafe_allow_html=True)
     logging.info('Into GEOS Data by Search Filename Inputs')
     file_name = st.text_input('NOAA GEOS-18 Filename',)
 
     try:
-        if st.button('Copy to User S3 Bucket'):
+        if st.button('Copy to User S3 Bucket ©️'):
             url, selected_file_key = goes_18_link_generation(file_name)
             url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file_key, file_name, satellite_input)
             logging.info('File URL in User S3 Bucket',url_s3)
@@ -75,7 +77,7 @@ def geos_search_filename(satellite_input):
         st.error('Oops! Unable to Generate')
 
 def nexrad_search_field(satellite_input):
-    st.markdown("<h3 style='text-align: center;'>Search By Field</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>Search Through Field 🔎</h1>", unsafe_allow_html=True)
     logging.info('Into NEXRAD Data by Search Field Inputs')
 
     year_input = st.selectbox('Select Year', nexrad_data['Year'].unique())
@@ -93,7 +95,7 @@ def nexrad_search_field(satellite_input):
                     file_input = st.selectbox('Select File Name', files_list)
                     logging.info('Selected file to copy to user bucket:',file_input)
 
-                    if st.button('Copy to User S3 Bucket'):
+                    if st.button('Copy to User S3 Bucket ©️'):
                         selected_file = year_input + '/' + month_input + '/' + day_input + '/' + station_code_input + '/' + file_input
                         logging.info('Selected file key:',selected_file)
                         url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file, file_input, satellite_input)
@@ -101,12 +103,12 @@ def nexrad_search_field(satellite_input):
                         logging.info('File URL in NOAA S3 Bucket',url_noaa)
 
 def nexrad_search_filename(satellite_input):
-    st.markdown("<h3 style='text-align: center;'>Search By Filename</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>Search Through Filename 🔎</h1>", unsafe_allow_html=True)
     logging.info('Into NEXRAD Data by Search Filename Inputs')
     file_name = st.text_input('NOAA GEOS-18 Filename',)
     
     try:
-        if st.button('Copy to User S3 Bucket'):
+        if st.button('Copy to User S3 Bucket ©️'):
             url, selected_file_key = nexrad_link_generation(file_name)
             url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file_key, file_name, satellite_input)
             logging.info('File URL in User S3 Bucket',url_s3)
@@ -117,45 +119,43 @@ def nexrad_search_filename(satellite_input):
         st.error('Oops! Unable to Generate')
 
 def geos_dataset():
-    option = st.selectbox('Select the option to search file', ('--Select Search Type--', 'Search By Field', 'Search By Filename'))
+    option = st.selectbox('Select the option to search file', ('--Select Search Type--', 'Search By Field 🔎', 'Search By Filename 🔎'))
     satellite_input = 'geos18'
     
     if option == '--Select Search Type--':
         st.error('Select an input field')
-    elif option == 'Search By Field':
+    elif option == 'Search By Field 🔎':
         geos_search_field(satellite_input)
     
-    elif option == 'Search By Filename':
+    elif option == 'Search By Filename 🔎':
         geos_search_filename(satellite_input)
 
 def nexrad_dataset():
-    option = st.selectbox('Select the option to search file', ('--Select Search Type--', 'Search By Field', 'Search By Filename'))
+    
+    # st.image(image)
+    option = st.selectbox('Select the option to search file', ('--Select Search Type--', 'Search By Field 🔎', 'Search By Filename 🔎'))
     satellite_input = 'nexrad'
 
     if option == '--Select Search Type--':
         st.error('Select an input field')
-    elif option == 'Search By Field':
+    elif option == 'Search By Field 🔎':
         nexrad_search_field(satellite_input)
     
-    elif option == 'Search By Filename':
+    elif option == 'Search By Filename 🔎':
         nexrad_search_filename(satellite_input)
 
 def nexrad_mapdata(nexradusweather_data):
-    st.markdown("<h2 style='text-align: center;'>Nexrad-Map Geo-location</h1>", unsafe_allow_html=True)
     logging.info('Running NEXRAD Map Data Exploration')
     st.map(nexradmap_data)
     
     m = folium.Map(location=[20,0], tiles="OpenStreetMap", zoom_start=2)
-    
-    # add marker one by one on the map
     for i in range(0,len(nexradmap_data)):
         folium.Marker(
         location = [nexradmap_data.iloc[i]['LAT'], nexradmap_data.iloc[i]['LON']],
         popup = (nexradmap_data.iloc[i]['ICAO'],nexradmap_data.iloc[i]['NAME'])
         ).add_to(m)
 
-    # Show the map again
-    st.markdown("<h2 style='text-align: center;'>Nexrad-Map Location-AND-Station-Names</h1>", unsafe_allow_html=True)
+    st.markdown("<h2 style='text-align: center;'>Nexrad Station Pointers</h1>", unsafe_allow_html=True)
     folium_static(m)
 
     path = "tl_2022_us_state/tl_2022_us_state.shp"
@@ -173,42 +173,52 @@ def nexrad_mapdata(nexradusweather_data):
     st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Mainland USA</h3>", unsafe_allow_html=True)
     axis = df.plot(cmap='magma')
     geo_data.plot(ax = axis, color = 'lightgreen')
-    figure = plt.gcf()
-    st.pyplot(plt)
+    figure1 = plt.gcf()
+    st.pyplot(figure1)
 
     st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Guam</h3>", unsafe_allow_html=True)
     axis = df2.plot(cmap='magma')
     geo_data2.plot(ax = axis, color = 'lightgreen')
-    figure = plt.gcf()
-    st.pyplot(plt)
+    figure2 = plt.gcf()
+    st.pyplot(figure2)
 
     st.markdown("<h3 style='text-align: center;'>Nexrad Locations in Alaska</h3>", unsafe_allow_html=True)
     axis = df3.plot(cmap = 'magma')
     geo_data3.plot(ax = axis, color = 'lightgreen')
-    figure = plt.gcf()
-    st.pyplot(plt)
+    figure3 = plt.gcf()
+    st.pyplot(figure3)
 
     return
 
 def main():
-    page = st.sidebar.selectbox("Choose a page", ["--Select Data--", "GEOS Data", "NexRad Data", "NexRad Map Locations"])
-    st.markdown("<h1 style='text-align: center;'>Geospatial Data Exploration Tool</h1>", unsafe_allow_html=True)
+    page = st.sidebar.selectbox("Choose a page", ["--Select Data--", "GEOS Data 🌎", "NexRad Data 🌎", "NexRad Map Locations 📍"])
+    for i in range(15):
+        st.sidebar.write('')
 
-    if page == "--Select Data--":
-        st.markdown("<h3 style='text-align: center;'>Select a page on the left</h1>", unsafe_allow_html=True)
+    st.sidebar.image("Images/Earth-Free-Download-PNG.png", width = 200)
+    st.markdown("<h1 style='text-align: center;'>Geospatial Data Exploration Tool 🔭</h1>", unsafe_allow_html=True)
     
-    elif page == "GEOS Data":
-        st.markdown("<h2 style='text-align: center;'>Data Exploration of the GEOS dataset</h1>", unsafe_allow_html=True)
+    if page == "--Select Data--":
+        st.markdown("<h3 style='text-align: center;'>Select page from the Left Selectbox</h1>", unsafe_allow_html=True)
+        st.write('')
+        st.image(Image.open('Images/DataExploration.png'))
+    
+    elif page == "GEOS Data 🌎":
+        st.markdown("<h2 style='text-align: center;'>Data Exploration of the GEOS dataset 🌎</h1>", unsafe_allow_html=True)
+        st.write('')
+        st.image(Image.open('Images/Satellite-data-for-imagery.jpeg'))
         logging.info('Running GEOS dataset file download script')
         geos_dataset()
 
-    elif page == "NexRad Data":
-        st.markdown("<h2 style='text-align: center;'>Data Exploration of the NexRad dataset</h1>", unsafe_allow_html=True)
+    elif page == "NexRad Data 🌎":
+        st.markdown("<h2 style='text-align: center;'>Data Exploration of the NexRad dataset 🌎</h1>", unsafe_allow_html=True)
+        st.write('')
+        st.image(Image.open('Images/SatelliteImage.jpeg'))
         logging.info('Running NEXRAD dataset file download script')
         nexrad_dataset()
     
-    elif page == "NexRad Map Locations":
-        st.markdown("<h2 style='text-align: center;'>Data Exploration of the NexRad dataset</h1>", unsafe_allow_html=True)
+    elif page == "NexRad Map Locations 📍":
+        st.markdown("<h2 style='text-align: center;'>NexRad Map Geo-Locations 📍</h1>", unsafe_allow_html=True)
         nexradusweather_data = pd.read_csv("Data/Weather_Radar_Stations.csv")
         nexradusweather_data.rename(columns = {'Y':'LATITUDE', 'X':'LONGITUDE'}, inplace = True)
         logging.info('Running NEXRAD Map Geo-location script')
