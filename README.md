@@ -74,11 +74,9 @@ obj = s3.list_objects(Bucket="<your_bucket_name>", Key="<your_file_name>").get('
 
 Test the Streamlit app locally to make sure it's working as expected.
 
-* Deploy the Streamlit app to a cloud platform:
-We have deployed the Streamlit app to a cloud platform such as AWS Elastic Beanstalk, Heroku, or Google Cloud Platform. You may need to add a requirements.txt file to your repository to specify the required packages for the deployment.
+* We have deployed the Streamlit app to a cloud platform such as AWS Elastic Beanstalk, Heroku, or Google Cloud Platform. You may need to add a requirements.txt file to your repository to specify the required packages for the deployment.
 
-* CodeLabs Documentation for the assignment flow
-We have created the documentation for assignment flow in CodeLabs to get started with the assignment for a new user. Here is the link to the [file](https://codelabs-preview.appspot.com/?file_id=1TBcYrdoadQK-Ls0QfJWQXjo0yJjhgUBBq-kn7Q2gN9E#0).
+* We have created the documentation for assignment process flow in CodeLabs to get started with the assignment for a new user. Here is the link to the [file](https://codelabs-preview.appspot.com/?file_id=1TBcYrdoadQK-Ls0QfJWQXjo0yJjhgUBBq-kn7Q2gN9E#0).
 
 ### Deployed App
 App is deployed on Streamlit Cloud and accessed via [link](https://bigdataia-spring2023-team02-assignment-1-streamlit-main-em4swm.streamlit.app)
