@@ -29,8 +29,7 @@ nexradmap_data = nexradmap_sqlite.main()
 
 def geos_search_field(satellite_input):
     st.markdown("<h3 style='text-align: center;'>Search By Field</h1>", unsafe_allow_html=True)
-    
-    st.write(geos_data)
+    logging.info('Into GEOS Data by Search Field Inputs')
 
     product_input = st.selectbox('Select Product Name', geos_data['Product_Name'].unique())
     if product_input:
@@ -45,31 +44,37 @@ def geos_search_field(satellite_input):
                 if hour_input:
                     files_list = aws_main.list_files_in_noaa_goes18_bucket(product_input, year_input, day_input, hour_input)
                     file_input = st.selectbox('Select File Name', files_list)
+                    logging.info('Selected file to copy to user bucket:',file_input)
 
-                    if st.button('Download to S3 Bucket'):
+                    if st.button('Copy to User S3 Bucket'):
                         selected_file = product_input + '/' + year_input + '/' + day_input + '/' + hour_input + '/' + file_input
+                        logging.info('Selected file key:',selected_file)
                         url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file, file_input, satellite_input)
-                        # st.write('File Link in S3 Bucket !!!\n', url_s3)
-                        # st.write('File Link in NOAA Bucket !!!\n', url_noaa)
+                        logging.info('File URL in User S3 Bucket',url_s3)
+                        logging.info('File URL in NOAA S3 Bucket',url_noaa)
 
 def geos_search_filename(satellite_input):
     st.markdown("<h3 style='text-align: center;'>Search By Filename</h1>", unsafe_allow_html=True)
+    logging.info('Into GEOS Data by Search Filename Inputs')
     file_name = st.text_input('NOAA GEOS-18 Filename',)
-    
+
     try:
         if st.button('Download to S3 Bucket'):
             url, selected_file_key = goes_18_link_generation(file_name)
             url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file_key, file_name, satellite_input)
-            st.write('File Link in S3 Bucket !!!\n', url_s3)
-            st.write('File Link in NOAA Bucket !!!\n', url_noaa)
-        
+            logging.info('File URL in User S3 Bucket',url_s3)
+            logging.info('File URL in NOAA S3 Bucket',url_noaa)
+            # st.write('File Link in S3 Bucket !!!\n', url_s3)
+            # st.write('File Link in NOAA Bucket !!!\n', url_noaa)
+    
     except ValueError:
+        logging.error('Not able to generate filename URL')
         st.error('Oops! Unable to Generate')
 
 def nexrad_search_field(satellite_input):
-    
     st.markdown("<h3 style='text-align: center;'>Search By Field</h1>", unsafe_allow_html=True)
-    
+    logging.info('Into NEXRAD Data by Search Field Inputs')
+
     year_input = st.selectbox('Select Year', nexrad_data['Year'].unique())
     if year_input:
         months = nexrad_data[nexrad_data['Year'] == year_input]['Month'].unique()
@@ -83,27 +88,35 @@ def nexrad_search_field(satellite_input):
                 if station_code_input:
                     files_list = aws_main.list_files_in_noaa_nexrad_bucket(year_input, month_input, day_input, station_code_input)
                     file_input = st.selectbox('Select File Name', files_list)
+                    logging.info('Selected file to copy to user bucket:',file_input)
 
-                    if st.button('Download to S3 Bucket'):
+                    if st.button('Copy to User S3 Bucket'):
                         selected_file = year_input + '/' + month_input + '/' + day_input + '/' + station_code_input + '/' + file_input
+                        logging.info('Selected file key:',selected_file)
                         url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file, file_input, satellite_input)
-                        
+                        logging.info('File URL in User S3 Bucket',url_s3)
+                        logging.info('File URL in NOAA S3 Bucket',url_noaa)
+
 def nexrad_search_filename(satellite_input):
     st.markdown("<h3 style='text-align: center;'>Search By Filename</h1>", unsafe_allow_html=True)
+    logging.info('Into NEXRAD Data by Search Filename Inputs')
     file_name = st.text_input('NOAA GEOS-18 Filename',)
     
     try:
         if st.button('Download to S3 Bucket'):
             url, selected_file_key = nexrad_link_generation(file_name)
             url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file_key, file_name, satellite_input)
-            
+            logging.info('File URL in User S3 Bucket',url_s3)
+            logging.info('File URL in NOAA S3 Bucket',url_noaa)
+    
     except ValueError:
+        logging.error('Not able to generate filename URL')
         st.error('Oops! Unable to Generate')
 
 def geos_dataset():
     option = st.selectbox('Select the option to search file', ('--Select Search Type--', 'Search By Field', 'Search By Filename'))
     satellite_input = 'geos18'
-
+    
     if option == '--Select Search Type--':
         st.error('Select an input field')
     elif option == 'Search By Field':
@@ -126,6 +139,7 @@ def nexrad_dataset():
 
 def nexrad_mapdata(nexradusweather_data):
     st.markdown("<h2 style='text-align: center;'>Nexrad-Map Geo-location</h1>", unsafe_allow_html=True)
+    logging.info('Running NEXRAD Map Data Exploration')
     st.map(nexradmap_data)
 
     path = "tl_2022_us_state/tl_2022_us_state.shp"
@@ -172,19 +186,24 @@ def main():
     
     elif page == "GEOS Data":
         st.markdown("<h2 style='text-align: center;'>Data Exploration of the GEOS dataset</h1>", unsafe_allow_html=True)
+        logging.info('Running GEOS dataset file download script')
         geos_dataset()
 
     elif page == "NexRad Data":
         st.markdown("<h2 style='text-align: center;'>Data Exploration of the NexRad dataset</h1>", unsafe_allow_html=True)
+        logging.info('Running NEXRAD dataset file download script')
         nexrad_dataset()
     
     elif page == "NexRad Map Locations":
         st.markdown("<h2 style='text-align: center;'>Data Exploration of the NexRad dataset</h1>", unsafe_allow_html=True)
         nexradusweather_data = pd.read_csv("Data/Weather_Radar_Stations.csv")
         nexradusweather_data.rename(columns = {'Y':'LATITUDE', 'X':'LONGITUDE'}, inplace = True)
+        logging.info('Running NEXRAD Map Geo-location script')
         nexrad_mapdata(nexradusweather_data)
     
     return
 
 if __name__ == "__main__":
+    logging.info('Streamlit app script starts')
     main()
+    logging.info('Streamlit app script ends')

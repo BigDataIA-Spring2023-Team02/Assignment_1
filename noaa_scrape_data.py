@@ -28,6 +28,7 @@ class Scrape_Data:
         self.nexrad_data_dict = {'ID': [], 'Year': [], 'Month': [], 'Day': [], 'NexRad Station Code': []}
 
     def geos18_data(self):
+        logging.info('Scraping GOES18 Metadata into df')
         id = 1
         prefix = "ABI-L1b-RadC/"
         result = self.s3client.list_objects(Bucket = self.geos_bucket_name, Prefix = prefix, Delimiter = '/')
@@ -54,10 +55,11 @@ class Scrape_Data:
         
         geos18_data = pd.DataFrame(self.geos18_data_dict)
         geos18_data.to_csv('geos18_data.csv', index = False, na_rep = 'Unknown', encoding = 'utf-8')
-
+        logging.info('Loaded scraped GOES18 metadata')
         return geos18_data
 
     def nexrad_data(self):
+        logging.info('Scraping NEXRAD Metadata into df')
         id = 1
         years = ['2022','2023']
         for year in years:
@@ -86,5 +88,5 @@ class Scrape_Data:
         
         nexrad_data = pd.DataFrame(self.nexrad_data_dict)
         nexrad_data.to_csv('nexrad_data.csv', index = False, na_rep = 'Unknown', encoding = 'utf-8')
-
+        logging.info('Loaded scraped NEXRAD metadata')
         return nexrad_data

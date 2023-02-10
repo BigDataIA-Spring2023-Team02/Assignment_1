@@ -1,6 +1,15 @@
+import os
 import re
 import requests
+import logging
 import streamlit as st
+
+LOGLEVEL = os.environ.get('LOGLEVEL', 'INFO').upper()
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=LOGLEVEL,
+    datefmt='%Y-%m-%d %H:%M:%S',
+    filename='logs.log')
 
 def goes_18_link_generation(file):
     try:
@@ -26,16 +35,16 @@ def goes_18_link_generation(file):
             
             response = requests.get(url)
             if(response.status_code == 404):
-                print("Sorry! No such file exists.")
+                logging.error('Sorry! No such file exists')
                 raise SystemExit()
             return url, selected_file_key
         
         else:
-            print("Invalid Filename format, please follow format for GOES18!")
+            logging.error('Invalid Filename format, please follow format for GOES18!')
             raise SystemExit()
     
     except:
-        print("No input Filename.")
+        logging.error('No input Filename')
 
 def nexrad_link_generation(file):
     try:
@@ -45,18 +54,19 @@ def nexrad_link_generation(file):
         if (re.match(r'[A-Z]{3}[A-Z0-9][0-9]{8}[_][0-9]{6}[_]{0,1}[A-Z]{0,1}[0-9]{0,2}[_]{0,1}[A-Z]{0,3}\b', file)):
             selected_file_key = file[4:8] + "/" + file[8:10] + "/" + file[10:12] + "/" + file[:4] + "/" + file
             url = start_url + file[4:8] + "/" + file[8:10] + "/" + file[10:12] + "/" + file[:4] + "/" + file
+            
             response = requests.get(url)
             if(response.status_code == 404):
-                print("Sorry! No such file exists.")
+                logging.error('Sorry! No such file exists')
                 raise SystemExit()
             return url, selected_file_key
         
         else:
-            print("Invalid Filename format, please follow format for GOES18!")
+            logging.error('Invalid Filename format, please follow format for GOES18!')
             raise SystemExit()
-
+    
     except:
-        print("No input Filename.")
+        logging.error('No input Filename')
 
 def goes18_filename_link_generation(product_name, year_input, day_input, hour_input, file_input):
     try:
@@ -71,12 +81,12 @@ def goes18_filename_link_generation(product_name, year_input, day_input, hour_in
         
         response = requests.get(url)
         if(response.status_code == 404):
-            print("Sorry! No such file exists.")
+            logging.error('Sorry! No such file exists')
             raise SystemExit()
         return url, selected_file
         
     except:
-        print("No input Filename.")
+        logging.error('No input Filename')
 
 def nexrad_filename_link_generation(year_input, month_input, day_input, station_code_input, file_input):
     try:
@@ -91,9 +101,9 @@ def nexrad_filename_link_generation(year_input, month_input, day_input, station_
         
         response = requests.get(url)
         if(response.status_code == 404):
-            print("Sorry! No such file exists.")
+            logging.error('Sorry! No such file exists')
             raise SystemExit()
         return url, selected_file
         
     except:
-        print("No input Filename.")
+        logging.error('No input Filename')

@@ -38,6 +38,7 @@ class AWS_Main:
         return file_list
 
     def list_files_in_noaa_goes18_bucket(self, product, year, day, hour):
+        logging.info('Running script to fetch GOES18 filenames for selected fields')
         year_input = year
         day_input = day
         hour_input = hour
@@ -49,9 +50,11 @@ class AWS_Main:
             file_path = objects['Key']
             file_path = file_path.split('/')
             file_list.append(file_path[-1])
+        logging.info('Returning Files List for selected fields:', prefix)
         return file_list
 
     def list_files_in_noaa_nexrad_bucket(self, year, month, day, station):
+        logging.info('Running script to fetch NEXRAD filenames for selected fields')
         year_input = year
         month_input = month
         day_input = day
@@ -63,6 +66,7 @@ class AWS_Main:
             file_path = objects['Key']
             file_path = file_path.split('/')
             file_list.append(file_path[-1])
+        logging.info('Returning Files List for selected fields:', prefix)
         return file_list
 
     def copy_file_to_user_bucket(self, selected_file, file_input, satellite_input):
