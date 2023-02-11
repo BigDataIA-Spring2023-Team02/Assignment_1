@@ -70,14 +70,14 @@ def geos_search_field(satellite_input):
                 if hour_input:
                     files_list = aws_main.list_files_in_noaa_goes18_bucket(product_input, year_input, day_input, hour_input)
                     file_input = st.selectbox('Select File Name', files_list)
-                    write_logs(f"Selected file to copy to user bucket")
+                    write_logs(f"Selected file to copy to user bucket {file_input}")
                     
                     if st.button('Copy to User S3 Bucket ©️'):
                         selected_file = product_input + '/' + year_input + '/' + day_input + '/' + hour_input + '/' + file_input
-                        write_logs(f"Selected file key:")
+                        write_logs(f"Selected file key: {selected_file}")
                         url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file, file_input, satellite_input)
-                        write_logs(f"File URL in User S3 Bucket")
-                        write_logs(f"File URL in NOAA S3 Bucket")
+                        write_logs(f"File URL in User S3 Bucket {url_s3}")
+                        write_logs(f"File URL in NOAA S3 Bucket {url_noaa}")
 
 def geos_search_filename(satellite_input):
     st.markdown("<h3 style='text-align: center;'>Search Through Filename 🔎</h1>", unsafe_allow_html=True)
@@ -88,8 +88,8 @@ def geos_search_filename(satellite_input):
         if st.button('Copy to User S3 Bucket ©️'):
             url, selected_file_key = goes_18_link_generation(file_name)
             url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file_key, file_name, satellite_input)
-            write_logs(f"File URL in User S3 Bucket")
-            write_logs(f"File URL in NOAA S3 Bucket")
+            write_logs(f"File URL in User S3 Bucket {url_s3}")
+            write_logs(f"File URL in NOAA S3 Bucket {url_noaa}")
             
     except ValueError:
         write_logs(f"Not able to generate filename URL")
@@ -112,14 +112,14 @@ def nexrad_search_field(satellite_input):
                 if station_code_input:
                     files_list = aws_main.list_files_in_noaa_nexrad_bucket(year_input, month_input, day_input, station_code_input)
                     file_input = st.selectbox('Select File Name',files_list)
-                    write_logs(f"Selected file to copy to user bucket")
+                    write_logs(f"Selected file to copy to user bucket {file_input}")
 
                     if st.button('Copy to User S3 Bucket ©️'):
                         selected_file = year_input + '/' + month_input + '/' + day_input + '/' + station_code_input + '/' + file_input
-                        write_logs(f"Selected file key:")
+                        write_logs(f"Selected file key: {selected_file}")
                         url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file, file_input, satellite_input)
-                        write_logs(f"File URL in User S3 Bucket")
-                        write_logs(f"File URL in NOAA S3 Bucket")
+                        write_logs(f"File URL in User S3 Bucket {url_s3}")
+                        write_logs(f"File URL in NOAA S3 Bucket {url_noaa}")
 
 def nexrad_search_filename(satellite_input):
     st.markdown("<h3 style='text-align: center;'>Search Through Filename 🔎</h1>", unsafe_allow_html=True)
@@ -130,8 +130,8 @@ def nexrad_search_filename(satellite_input):
         if st.button('Copy to User S3 Bucket ©️'):
             url, selected_file_key = nexrad_link_generation(file_name)
             url_s3, url_noaa = aws_main.copy_file_to_user_bucket(selected_file_key, file_name, satellite_input)
-            write_logs(f"File URL in User S3 Bucket")
-            write_logs(f"File URL in NOAA S3 Bucket")
+            write_logs(f"File URL in User S3 Bucket {url_s3}")
+            write_logs(f"File URL in NOAA S3 Bucket {url_noaa}")
     
     except ValueError:
         write_logs(f"Not able to generate filename URL")

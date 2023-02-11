@@ -1,0 +1,36 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.12, pytest-7.1.1, pluggy-1.0.0 -- /Users/meetdoshi/opt/anaconda3/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/meetdoshi/Documents/Northeastern University/SPRING 2023/Big Data Systems & Intelligent Analytics/Assignment_1
+plugins: anyio-3.5.0
+collecting ... collected 12 items
+
+test.py::test_case01 PASSED                                              [  8%]
+test.py::test_case02 PASSED                                              [ 16%]
+test.py::test_case03 PASSED                                              [ 25%]
+test.py::test_case04 PASSED                                              [ 33%]
+test.py::test_case05 PASSED                                              [ 41%]
+test.py::test_case06 FAILED                                              [ 50%]
+test.py::test_case07 PASSED                                              [ 58%]
+test.py::test_case08 PASSED                                              [ 66%]
+test.py::test_case09 PASSED                                              [ 75%]
+test.py::test_case10 PASSED                                              [ 83%]
+test.py::test_case11 PASSED                                              [ 91%]
+test.py::test_case12 PASSED                                              [100%]
+
+=================================== FAILURES ===================================
+_________________________________ test_case06 __________________________________
+
+    def test_case06():
+        goes_generated_url, goes_selected_file_key = goes_18_link_generation(goes_df['File name'][6])
+        nexrad_generated_url, nexrad_selected_file_key = nexrad_link_generation(nexrad_df['File name'][6])
+        goes_url = goes_df['Full file name'][6]
+        nexrad_url = nexrad_df['Full file name'][6]
+        assert goes_generated_url == goes_url
+>       assert nexrad_generated_url == nexrad_url
+E       AssertionError: assert 'https://noaa-nexrad-level2.s3.amazonaws.com/2001/12/13/KCBW/KCBW20011213_002358.gz' == nan
+
+test.py:92: AssertionError
+=========================== short test summary info ============================
+FAILED test.py::test_case06 - AssertionError: assert 'https://noaa-nexrad-lev...
+======================== 1 failed, 11 passed in 37.80s =========================
